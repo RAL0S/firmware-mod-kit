@@ -1,0 +1,40 @@
+base: core18
+version: '0.99-8403a17'
+summary: Firmware Modification Kit
+description: |
+  Firmware Modification Kit is a collection of scripts and utilities
+  to extract and rebuild linux based firmware images.
+
+grade: stable # must be 'stable' to release into candidate/stable channels
+confinement: devmode
+
+apps:
+  extract-firmware:
+    command: firmware-mod-kit/extract-firmware.sh
+    plugs: [home]
+
+  build-firmware:
+    command: firmware-mod-kit/build-firmware.sh
+    plugs: [home]
+
+
+parts:
+  extract-firmware:
+    plugin: nil
+    override-build: |
+      git clone --depth=1 https://github.com/rampageX/firmware-mod-kit
+      cd firmware-mod-kit
+      touch /tmp/delme
+      ./extract-firmware.sh /tmp/delme || true
+      rm /tmp/delme
+      rm -rf .git
+      sed -i 's:footer.txt:$SNAP_USER_COMMON/footer.txt:' extract-firmware.sh build-firmware.sh
+      cd ..
+      mv firmware-mod-kit $SNAPCRAFT_PART_INSTALL
+
+    build-packages: [git, build-essential, zlib1g-dev, liblzma-dev, autoconf]
+    stage-packages: [python, bsdmainutils, python-magic]
+
+  build-firmware:
+    plugin: nil
+    after: [extract-firmware]

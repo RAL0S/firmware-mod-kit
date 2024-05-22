@@ -1,0 +1,9 @@
+[package_detail]
+name = "firmware-mod-kit"
+description = "A collection of scripts and utilities to extract and rebuild linux based firmware images"
+version = "0.99-8403a17"
+source_url = "https://github.com/rampageX/firmware-mod-kit"
+license = ""
+install_script = "setup.sh"
+install_script_type = "shell"
+package_type = "snap"
